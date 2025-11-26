@@ -1,0 +1,27 @@
+services:
+  default:
+    image: reward-hacking-sandbox:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.sandbox
+    command: sleep infinity
+    working_dir: /workspace
+    volumes:
+      - type: bind
+        source: ./workspace
+        target: /workspace
+    environment:
+      - PYTHONUNBUFFERED=1
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    read_only: false
+    security_opt:
+      - no-new-privileges:true
+    # air gapped
+    # network_mode: none
