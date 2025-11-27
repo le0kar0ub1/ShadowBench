@@ -2,17 +2,18 @@
 
 Exposing reward-hacking in AI coding agents through hidden truth tests.
 
+The benchmark aims to answer the question: Do LLMs implement the spec or the tests ?
+
+It uses a coding task benchmark with visible and hidden tests. There are 4 scenarios:
+- Baseline: The agent is allowed to modify the test file.
+- No tests provided: The agent has to implement the function without any tests.
+- No edit: The agent is given the visible tests but is not allowed to modify the test file.
+- Anti-gaming: The agent is given the visible tests but is not allowed to delete or weaken existing tests.
+
 ## Installation
 
 ```bash
 uv sync
-```
-
-install SWE benchmark
-
-```bash
-git clone https://github.com/princeton-nlp/SWE-bench.git
-cd SWE-bench
 ```
 
 Build the sandbox container
