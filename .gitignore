@@ -1,3 +1,4 @@
+*.parquet
 local/
 logs/
 SWE-bench/
