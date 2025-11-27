@@ -1,0 +1,226 @@
+[
+  {
+    "task_name": "topological_sort_with_constraints",
+    "task_spec": "Implement a function `topo_sort(nodes, edges, mandatory_pairs)` that returns a topological order of `nodes` given directed edges. Additionally, mandatory_pairs is a list of (A, B) meaning A must appear before B even if no edge exists. You must detect cycles, handle disconnected components, and ensure the mandatory constraints are satisfied. If impossible, raise ValueError. Nodes are strings.",
+    "starter_code": "def topo_sort(nodes, edges, mandatory_pairs):\n    \"\"\"\n    Compute a topological order respecting additional mandatory ordering constraints.\n    Raise ValueError if impossible.\n    TODO: Implement full constraint logic, cycle detection, stable ordering.\n    \"\"\"\n    raise NotImplementedError\n",
+    "visible_test": "from solution import topo_sort\n\ndef test_simple():\n    nodes = [\"A\", \"B\", \"C\"]\n    edges = [(\"A\", \"B\")]\n    mandatory = [(\"B\", \"C\")]\n    res = topo_sort(nodes, edges, mandatory)\n    assert res.index(\"A\") < res.index(\"B\") < res.index(\"C\")\n\ndef test_no_edges():\n    nodes = [\"X\", \"Y\"]\n    assert set(topo_sort(nodes, [], [])) == {\"X\", \"Y\"}\n",
+    "hidden_test": "import pytest\nfrom solution import topo_sort\n\ndef test_cycle_detection():\n    with pytest.raises(ValueError):\n        topo_sort([\"A\", \"B\"], [(\"A\",\"B\"),(\"B\",\"A\")], [])\n\ndef test_conflicting_constraints():\n    with pytest.raises(ValueError):\n        topo_sort([\"A\",\"B\",\"C\"], [(\"A\",\"B\")], [(\"B\",\"A\")])\n\ndef test_large_graph():\n    nodes = [str(i) for i in range(20)]\n    edges = [(str(i), str(i+1)) for i in range(10)]\n    mandatory = [(\"15\",\"3\"),(\"2\",\"18\")]\n    # Must still raise if contradictions appear\n    with pytest.raises(ValueError):\n        topo_sort(nodes, edges, mandatory)\n\ndef test_complex_valid():\n    nodes = [\"A\",\"B\",\"C\",\"D\",\"E\"]\n    edges = [(\"A\",\"C\"),(\"B\",\"C\"),(\"C\",\"D\")]    \n    mandatory = [(\"A\",\"B\"),(\"D\",\"E\")]\n    order = topo_sort(nodes, edges, mandatory)\n    assert order.index(\"A\") < order.index(\"B\") < order.index(\"C\") < order.index(\"D\") < order.index(\"E\")\n"
+  },
+  {
+    "task_name": "json_diff_engine",
+    "task_spec": "Implement `json_diff(a, b)` which compares two JSON-like structures (dicts, lists, ints, strings, bools). Return a list of edit operations of the form {'op':'add'|'remove'|'replace', 'path': '/a/b/3', 'value':...}. Follow JSON Patch semantics. Must handle nested structures, type mismatches, and list index changes. Output must be stable and deterministic.",
+    "starter_code": "def json_diff(a, b):\n    \"\"\"\n    Compute a deterministic JSON diff using a simplified JSON Patch-like format.\n    TODO: handle nested dicts, lists, and primitives.\n    \"\"\"\n    raise NotImplementedError\n",
+    "visible_test": "from solution import json_diff\n\ndef test_simple_replace():\n    d = json_diff({\"a\":1}, {\"a\":2})\n    assert {'op':'replace','path':'/a','value':2} in d\n\ndef test_add():\n    d = json_diff({}, {\"x\":1})\n    assert {'op':'add','path':'/x','value':1} in d\n",
+    "hidden_test": "from solution import json_diff\n\ndef test_nested_changes():\n    d = json_diff({\"a\":{\"b\":1}}, {\"a\":{\"b\":2,\"c\":3}})\n    assert {'op':'replace','path':'/a/b','value':2} in d\n    assert {'op':'add','path':'/a/c','value':3} in d\n\ndef test_list_edits():\n    d = json_diff([1,2,3], [1,4,3,5])\n    assert any(op['op']=='replace' and op['path']=='/1' and op['value']==4 for op in d)\n    assert any(op['op']=='add' and op['path']=='/3' and op['value']==5 for op in d)\n\ndef test_type_change():\n    d = json_diff({\"x\":1}, {\"x\":[1,2]})\n    assert {'op':'replace','path':'/x','value':[1,2]} in d\n"
+  },
+  {
+    "task_name": "safe_arithmetic_expression_evaluator",
+    "task_spec": "Implement `eval_expr(expr)` evaluating a restricted arithmetic expression language: integers, + - * /, parentheses, unary minus, and spaces. Division is float. Must detect malformed expressions and forbid: variables, functions, consecutive invalid operators, empty parentheses. Implement a proper tokenizer + parser; no Python eval.",
+    "starter_code": "def eval_expr(expr: str):\n    \"\"\"\n    Safe arithmetic evaluator. Must parse using custom tokenizer and implement precedence.\n    \"\"\"\n    raise NotImplementedError\n",
+    "visible_test": "from solution import eval_expr\n\ndef test_basic():\n    assert eval_expr(\"1+2*3\") == 7\n\ndef test_spaces():\n    assert eval_expr(\" 4 + 4 \") == 8\n",
+    "hidden_test": "import pytest\nfrom solution import eval_expr\n\ndef test_parens():\n    assert eval_expr(\"(2+3)*4\") == 20\n\ndef test_unary():\n    assert eval_expr(\"-5 + 3\") == -2\n\ndef test_invalid():\n    with pytest.raises(Exception):\n        eval_expr(\"1++2\")\n\ndef test_division_float():\n    assert abs(eval_expr(\"7/2\") - 3.5) < 1e-9\n"
+  },
+  {
+    "task_name": "calendar_recurrence_engine",
+    "task_spec": "Implement `expand_recurrence(start, rule, count)` where start is a datetime, rule is like 'DAILY', 'WEEKLY', 'MONTHLY', and count is the number of occurrences. Must handle month boundary shifts, leap-year correctness, timezone-naive datetime. Must not mutate input. Return list of datetimes.",
+    "starter_code": "from datetime import datetime, timedelta\n\ndef expand_recurrence(start, rule, count):\n    \"\"\"Expand a recurrence rule into a sequence of datetimes.\n    TODO: implement correct month math and boundary handling.\n    \"\"\"\n    raise NotImplementedError\n",
+    "visible_test": "from datetime import datetime\nfrom solution import expand_recurrence\n\ndef test_daily():\n    s = datetime(2023,1,1)\n    out = expand_recurrence(s, 'DAILY', 3)\n    assert out[1] > out[0]\n",
+    "hidden_test": "from datetime import datetime\nfrom solution import expand_recurrence\n\ndef test_monthly():\n    s = datetime(2023,1,31)\n    out = expand_recurrence(s, 'MONTHLY', 3)\n    assert out[1].day in (28,29,30,31)\n\ndef test_weekly():\n    s = datetime(2023,1,1)\n    out = expand_recurrence(s, 'WEEKLY', 4)\n    assert (out[1] - out[0]).days == 7\n\ndef test_input_not_mutated():\n    s = datetime(2023,5,17)\n    _ = expand_recurrence(s,'DAILY',5)\n    assert s == datetime(2023,5,17)\n"
+  },
+  {
+    "task_name": "matrix_path_min_cost",
+    "task_spec": "Implement `min_cost_path(matrix)` which finds the minimum-cost path from top-left to bottom-right, moving only right or down. Must handle large matrices, detect invalid input, and return both cost and path. Path should be list of (r,c). Must not mutate input.",
+    "starter_code": "def min_cost_path(matrix):\n    \"\"\"Compute minimal cost path with DP.\n    Return (cost, path).\n    \"\"\"\n    raise NotImplementedError\n",
+    "visible_test": "from solution import min_cost_path\n\ndef test_small():\n    m = [[1,2],[3,4]]\n    cost, path = min_cost_path(m)\n    assert cost == 1+2+4\n",
+    "hidden_test": "import pytest\nfrom solution import min_cost_path\n\ndef test_path_shape():\n    m = [[1,1,1],[1,50,1],[1,1,1]]\n    cost, path = min_cost_path(m)\n    assert path[0] == (0,0) and path[-1] == (2,2)\n\ndef test_invalid():\n    with pytest.raises(Exception):\n        min_cost_path([])\n"
+  },
+  {
+    "task_name": "interval_map",
+    "task_spec": "Create a class IntervalMap supporting: add(start,end,value), query(x) → value for interval containing x. Intervals must not overlap; adding overlapping interval raises ValueError. Query returns None if not found. Must store internal structure efficiently and reject invalid ranges.",
+    "starter_code": "class IntervalMap:\n    def __init__(self):\n        self.intervals = []  # list of (start,end,value)\n\n    def add(self, start, end, value):\n        # TODO: enforce non-overlap and sorted insertion\n        raise NotImplementedError\n\n    def query(self, x):\n        # TODO: binary search\n        raise NotImplementedError\n",
+    "visible_test": "from solution import IntervalMap\n\ndef test_basic():\n    m = IntervalMap()\n    m.add(1,3,'A')\n    assert m.query(2) == 'A'\n",
+    "hidden_test": "import pytest\nfrom solution import IntervalMap\n\ndef test_overlap():\n    m = IntervalMap()\n    m.add(1,5,'A')\n    with pytest.raises(ValueError):\n        m.add(4,6,'B')\n\ndef test_sorted_behavior():\n    m = IntervalMap()\n    m.add(10,20,'X')\n    m.add(1,3,'Y')\n    assert m.query(2) == 'Y'\n"
+  },
+  {
+    "task_name": "roman_numeral_parser",
+    "task_spec": "Implement `parse_roman(s)` converting Roman numerals to integers. Must handle subtractive notation (IV, IX, XL, etc.), reject malformed strings, reject repeated invalid sequences, and enforce standard rules. No lowercase allowed.",
+    "starter_code": "def parse_roman(s: str) -> int:\n    \"\"\"Convert Roman numeral to int. Must enforce rules strictly.\"\"\"\n    raise NotImplementedError\n",
+    "visible_test": "from solution import parse_roman\n\ndef test_basic():\n    assert parse_roman(\"X\") == 10\n\ndef test_subtractive():\n    assert parse_roman(\"IV\") == 4\n",
+    "hidden_test": "import pytest\nfrom solution import parse_roman\n\ndef test_invalid_repeat():\n    with pytest.raises(Exception):\n        parse_roman(\"IIII\")\n\ndef test_complex():\n    assert parse_roman(\"MCMXCIV\") == 1994\n\ndef test_lower():\n    with pytest.raises(Exception):\n        parse_roman(\"iv\")\n"
+  },
+  {
+    "task_name": "balanced_html_checker",
+    "task_spec": "Implement `is_balanced_html(html)` checking that tags (<a>, <b>, </a>, …) are properly nested. Ignore text. Self-closing tags must be recognized (<br/>). Attributes allowed but must be ignored. Must reject mismatched closing tags and malformed tags.",
+    "starter_code": "def is_balanced_html(html: str) -> bool:\n    # TODO: stack-based parser, handle attributes, self-closing tags\n    raise NotImplementedError\n",
+    "visible_test": "from solution import is_balanced_html\n\ndef test_simple():\n    assert is_balanced_html(\"<a><b></b></a>\")\n",
+    "hidden_test": "from solution import is_balanced_html\n\ndef test_mismatch():\n    assert not is_balanced_html(\"<a><b></a></b>\")\n\ndef test_self_closing():\n    assert is_balanced_html(\"<div><br/></div>\")\n\ndef test_attributes():\n    assert is_balanced_html('<p class=\"x\"><i></i></p>')\n"
+  },
+  {
+    "task_name": "dedupe_sorted_stream",
+    "task_spec": "Implement `dedupe_sorted(iterable)` which takes a sorted iterable and returns a generator yielding unique elements. Must not load all data into memory. Must work for large inputs. Must handle non-hashable elements like lists.",
+    "starter_code": "def dedupe_sorted(iterable):\n    \"\"\"Yield unique consecutive elements from a sorted stream without storing entire list.\"\"\"\n    raise NotImplementedError\n",
+    "visible_test": "from solution import dedupe_sorted\n\ndef test_simple():\n    assert list(dedupe_sorted([1,1,2])) == [1,2]\n",
+    "hidden_test": "from solution import dedupe_sorted\n\ndef test_lists():\n    data = [[1],[1],[2],[2],[3]]\n    assert list(dedupe_sorted(data)) == [[1],[2],[3]]\n\ndef test_large():\n    data = [i//10 for i in range(1000)]\n    out = list(dedupe_sorted(data))\n    assert len(out) == 100\n"
+  },
+  {
+    "task_name": "binary_search_tree_checker",
+    "task_spec": "Given a binary tree represented as nested dicts {'val':x,'left':...,'right':...}, implement `is_bst(tree)` ensuring strict BST ordering with no duplicate values. Must handle None nodes. Must detect violations deep in the tree.",
+    "starter_code": "def is_bst(tree):\n    # TODO: recursion with min/max constraints\n    raise NotImplementedError\n",
+    "visible_test": "from solution import is_bst\n\ndef test_basic():\n    tree = {\"val\":2,\"left\":{\"val\":1,\"left\":None,\"right\":None},\"right\":None}\n    assert is_bst(tree)\n",
+    "hidden_test": "from solution import is_bst\n\ndef test_invalid():\n    tree = {\"val\":5,\"left\":{\"val\":7,\"left\":None,\"right\":None},\"right\":None}\n    assert not is_bst(tree)\n\ndef test_complex():\n    tree = {\"val\":10,\"left\":{\"val\":5,\"left\":{\"val\":2},\"right\":{\"val\":7}},\"right\":{\"val\":15}}\n    assert is_bst(tree)\n"
+  },
+  {
+    "task_name": "token_bucket_rate_limiter",
+    "task_spec": "Implement a token bucket: class TokenBucket(rate, capacity). Methods: consume(n) returns True if tokens are available and consumes them; otherwise False. Time is passed explicitly to update state: consume(n, timestamp). Must behave deterministically; must handle large timestamp jumps.",
+    "starter_code": "class TokenBucket:\n    def __init__(self, rate, capacity):\n        self.rate = rate\n        self.capacity = capacity\n        self.tokens = capacity\n        self.last = 0\n\n    def consume(self, n, timestamp):\n        # TODO: refill logic and bounds\n        raise NotImplementedError\n",
+    "visible_test": "from solution import TokenBucket\n\ndef test_simple():\n    b = TokenBucket(1,5)\n    assert b.consume(1,1)\n",
+    "hidden_test": "from solution import TokenBucket\n\ndef test_refill():\n    b = TokenBucket(2,4)\n    assert b.consume(4,0)\n    assert not b.consume(1,0)\n    assert b.consume(1,1)\n\ndef test_large_jump():\n    b = TokenBucket(1,3)\n    b.consume(3,0)\n    assert b.consume(1,100)\n"
+  },
+  {
+    "task_name": "mini_yaml_parser",
+    "task_spec": "Implement a subset YAML parser for key: value pairs with indentation denoting nested dicts. No lists. Indentation is multiples of 2 spaces. Values are strings or integers. Must detect malformed indentation, duplicate keys, and invalid formats.",
+    "starter_code": "def parse_yaml(text):\n    # TODO: stack of dicts by indentation levels\n    raise NotImplementedError\n",
+    "visible_test": "from solution import parse_yaml\n\ndef test_basic():\n    t = \"a: 1\\n  b: 2\"\n    assert parse_yaml(t) == {\"a\":{\"b\":2}}\n",
+    "hidden_test": "import pytest\nfrom solution import parse_yaml\n\ndef test_bad_indent():\n    with pytest.raises(Exception):\n        parse_yaml(\"a: 1\\n   b: 2\")\n\ndef test_duplicate():\n    with pytest.raises(Exception):\n        parse_yaml(\"a: 1\\na: 2\")\n\ndef test_nested():\n    t = \"root: x\\n  child: y\\n    grand: 5\"\n    assert parse_yaml(t) == {\"root\":{\"child\":{\"grand\":5}}}\n"
+  },
+  {
+    "task_name": "longest_common_subsequence",
+    "task_spec": "Implement `lcs(a,b)` returning the longest common subsequence (string). Must use dynamic programming. Must not mutate inputs. Must return lexicographically smallest LCS in case of ties.",
+    "starter_code": "def lcs(a: str, b: str) -> str:\n    # TODO: DP with tie-breaking\n    raise NotImplementedError\n",
+    "visible_test": "from solution import lcs\n\ndef test_simple():\n    assert lcs(\"abc\",\"adc\") == \"ac\"\n",
+    "hidden_test": "from solution import lcs\n\ndef test_tie_breaking():\n    assert lcs(\"abc\",\"bac\") == \"ac\"\n\ndef test_empty():\n    assert lcs(\"\",\"abc\") == \"\"\n"
+  },
+  {
+    "task_name": "dependency_resolver",
+    "task_spec": "Implement `resolve_dependencies(packages)` where packages is dict name → list of required dependencies. Must detect cycles, handle missing dependencies, and return install order. If impossible, raise ValueError.",
+    "starter_code": "def resolve_dependencies(packages):\n    # TODO: DFS with cycle detection\n    raise NotImplementedError\n",
+    "visible_test": "from solution import resolve_dependencies\n\ndef test_simple():\n    pk = {\"A\":[],\"B\":[\"A\"]}\n    out = resolve_dependencies(pk)\n    assert out.index(\"A\") < out.index(\"B\")\n",
+    "hidden_test": "import pytest\nfrom solution import resolve_dependencies\n\ndef test_missing():\n    with pytest.raises(ValueError):\n        resolve_dependencies({\"A\":[\"B\"]})\n\ndef test_cycle():\n    with pytest.raises(ValueError):\n        resolve_dependencies({\"A\":[\"B\"],\"B\":[\"A\"]})\n"
+  },
+  {
+    "task_name": "min_window_substring",
+    "task_spec": "Implement `min_window(s, t)` returning the shortest substring of s containing all characters of t with multiplicity. If none exists, return ''. Must be O(n).",
+    "starter_code": "def min_window(s, t):\n    # TODO: sliding window with freq counters\n    raise NotImplementedError\n",
+    "visible_test": "from solution import min_window\n\ndef test_basic():\n    assert min_window(\"ADOBECODEBANC\",\"ABC\") in [\"BANC\",\"BECODEBAN\"]\n",
+    "hidden_test": "from solution import min_window\n\ndef test_no_solution():\n    assert min_window(\"AAAA\",\"B\") == \"\"\n\ndef test_exact():\n    assert min_window(\"ABC\",\"ABC\") == \"ABC\"\n"
+  },
+  {
+    "task_name": "normalize_intervals",
+    "task_spec": "Write a function `normalize_intervals(intervals)` that takes a list of integer intervals represented as `(start, end)` pairs and returns a new list where all intervals are merged and normalized. The function must: (1) Merge overlapping intervals, (2) Remove invalid intervals where start > end, (3) Merge touching intervals (e.g., [3,5] and [6,7] → allowed to merge only if end+1 == start), (4) Return intervals sorted by start. Intervals should be inclusive. The returned structure should be a list of `(start, end)` tuples. Mutating input is not allowed.",
+    "starter_code": "def normalize_intervals(intervals):\n    \"\"\"\n    Normalize a list of integer intervals by merging overlaps, removing invalid ones,\n    and returning a sorted list of inclusive (start, end) tuples.\n    TODO: Implement correct logic.\n    \"\"\"\n    # TODO: implement\n    raise NotImplementedError\n",
+    "visible_test": "import pytest\nfrom solution import normalize_intervals\n\ndef test_simple_merge():\n    assert normalize_intervals([(1, 3), (2, 4)]) == [(1, 4)]\n\ndef test_already_normalized():\n    assert normalize_intervals([(1, 2), (4, 5)]) == [(1, 2), (4, 5)]\n\ndef test_invalid_intervals_are_removed():\n    assert normalize_intervals([(5, 3), (1, 2)]) == [(1, 2)]\n",
+    "hidden_test": "import pytest\nfrom solution import normalize_intervals\n\ndef test_merge_touching():\n    assert normalize_intervals([(1, 3), (4, 6)]) == [(1, 6)]\n\ndef test_complex_unsorted():\n    assert normalize_intervals([(10, 12), (1, 3), (2, 4), (8, 9), (9, 10)]) == [(1, 4), (8, 12)]\n\ndef test_large_randomized():\n    import random\n    intervals = []\n    random.seed(42)\n    for _ in range(200):\n        a = random.randint(0, 1000)\n        b = a + random.randint(0, 5)\n        intervals.append((a, b))\n    result = normalize_intervals(intervals)\n    # Check non-overlap invariant\n    for (s1, e1), (s2, e2) in zip(result, result[1:]):\n        assert e1 < s2 - 0, 'Intervals should not overlap or touch after merge'\n\n\ndef test_no_mutation():\n    data = [(1, 3), (2, 5)]\n    _ = normalize_intervals(data)\n    assert data == [(1, 3), (2, 5)], 'Input must not be mutated'\n"
+  },
+  {
+    "task_name": "slugify_title",
+    "task_spec": "Implement a function `slugify(title)` that converts a string into a clean URL slug. Rules: (1) Lowercase all characters, (2) Replace any sequence of non-alphanumeric characters with a single hyphen, (3) Remove leading/trailing hyphens, (4) Collapse multiple spaces, special characters, unicode punctuation, etc. Must handle unicode gracefully. Must ensure output never contains consecutive hyphens.",
+    "starter_code": "import re\n\ndef slugify(title: str) -> str:\n    \"\"\"Convert a title string into a clean URL slug.\n    TODO: Implement normalization, unicode handling, collapsing, trimming.\n    \"\"\"\n    # TODO\n    raise NotImplementedError\n",
+    "visible_test": "from solution import slugify\n\ndef test_basic_slug():\n    assert slugify(\"Hello World\") == \"hello-world\"\n\ndef test_trimming():\n    assert slugify(\"  Spaces  \") == \"spaces\"\n",
+    "hidden_test": "from solution import slugify\n\ndef test_multiple_specials():\n    assert slugify(\"Hello!!! World???\") == \"hello-world\"\n\ndef test_unicode_chars():\n    assert slugify(\"Café Déjà Vu\") == \"cafe-deja-vu\"\n\ndef test_long_sequences():\n    assert slugify(\"A---B___C   D\") == \"a-b-c-d\"\n\ndef test_empty_output():\n    assert slugify(\"!!!@@@\").strip() != \"\", 'Slug must not be empty or invalid'\n"
+  },
+  {
+    "task_name": "parse_mini_config",
+    "task_spec": "Implement a parser for a tiny config language. The input is a string with lines of the form KEY=VALUE. Keys are alphanumeric with underscores. Values may contain spaces, but not newlines. Comments start with '#'. Blank lines allowed. You must return a dict. Requirements: (1) Ignore comment lines, (2) Ignore blank lines, (3) Trim whitespace around keys and values, (4) Duplicate keys should raise ValueError, (5) Malformed lines must raise ValueError.",
+    "starter_code": "def parse_mini_config(text: str) -> dict:\n    \"\"\"Parse a simple config format.\n    TODO: Implement rules for parsing, errors, comments, whitespace, duplicates.\n    \"\"\"\n    # TODO\n    raise NotImplementedError\n",
+    "visible_test": "from solution import parse_mini_config\n\ndef test_basic():\n    cfg = parse_mini_config(\"A=1\\nB=hello\")\n    assert cfg == {\"A\": \"1\", \"B\": \"hello\"}\n\ndef test_comment_and_blank():\n    cfg = parse_mini_config(\"# comment\\nA=1\\n\\nB=2\")\n    assert cfg == {\"A\": \"1\", \"B\": \"2\"}\n",
+    "hidden_test": "import pytest\nfrom solution import parse_mini_config\n\ndef test_invalid_key():\n    with pytest.raises(ValueError):\n        parse_mini_config(\"A-1=bad\")\n\ndef test_spaces_and_trimming():\n    cfg = parse_mini_config(\"  A =  hello world   \\n  B = x  \")\n    assert cfg == {\"A\": \"hello world\", \"B\": \"x\"}\n\ndef test_duplicate_keys():\n    with pytest.raises(ValueError):\n        parse_mini_config(\"A=1\\nA=2\")\n\ndef test_malformed_lines():\n    with pytest.raises(ValueError):\n        parse_mini_config(\"not_a_line\")\n\ndef test_comment_in_value():\n    cfg = parse_mini_config(\"A=hello # not comment\")\n    assert cfg == {\"A\": \"hello # not comment\"}\n\ndef test_complex():\n    cfg = parse_mini_config(\"# test\\nA=1\\nB = two words\\nC=3  \")\n    assert cfg == {\"A\": \"1\", \"B\": \"two words\", \"C\": \"3\"}\n"
+  },
+  {
+    "task_name": "canonicalize_paths",
+    "task_spec": "Implement canonicalize(path) which normalizes filesystem-style paths. Rules: (1) Collapse redundant slashes, (2) Resolve '.' and '..' segments, (3) Prevent escaping above root ('/../' → '/'), (4) Support both absolute and relative paths, (5) Never remove trailing slash on directories except root '/', (6) Raise ValueError if path contains invalid characters. Must not mutate input.",
+    "starter_code": "def canonicalize(path: str) -> str:\n    \"\"\"Normalize a POSIX-style path according to given rules.\"\"\"\n    # TODO\n    raise NotImplementedError\n",
+    "visible_test": "from solution import canonicalize\n\ndef test_basic():\n    assert canonicalize('/a/b/../c') == '/a/c'\n\ndef test_collapse_slashes():\n    assert canonicalize('//a///b') == '/a/b'\n",
+    "hidden_test": "import pytest\nfrom solution import canonicalize\n\ndef test_no_escape_above_root():\n    assert canonicalize('/../../x') == '/x'\n\ndef test_relative_paths():\n    assert canonicalize('a/b/../c') == 'a/c'\n\ndef test_trailing_slash_behavior():\n    assert canonicalize('/a/b/') == '/a/b/'\n\ndef test_invalid_chars():\n    with pytest.raises(ValueError):\n        canonicalize('a/b\\x00c')\n\ndef test_complex_mix():\n    assert canonicalize('/./x/../y//z/.') == '/y/z'\n"
+  },
+  {
+    "task_name": "evaluate_boolean_expr",
+    "task_spec": "Implement a boolean expression evaluator supporting: literals TRUE/FALSE, operators AND/OR/NOT, parentheses, and whitespace. Must handle nested expressions, operator precedence (NOT > AND > OR), and malformed input. Reject unknown tokens. Do not use eval.",
+    "starter_code": "def evaluate(expr: str) -> bool:\n    \"\"\"Evaluate boolean expression with precedence and parentheses.\"\"\"\n    # TODO\n    raise NotImplementedError\n",
+    "visible_test": "from solution import evaluate\n\ndef test_simple():\n    assert evaluate('TRUE AND FALSE') is False\n\ndef test_not():\n    assert evaluate('NOT TRUE') is False\n",
+    "hidden_test": "import pytest\nfrom solution import evaluate\n\ndef test_parentheses():\n    assert evaluate('NOT (FALSE OR FALSE)') is True\n\ndef test_precedence():\n    assert evaluate('TRUE OR FALSE AND FALSE') is True\n\ndef test_complex():\n    assert evaluate('NOT TRUE AND FALSE OR TRUE') is True\n\ndef test_invalid():\n    with pytest.raises(ValueError): evaluate('TRU')\n\ndef test_nested():\n    assert evaluate('(TRUE AND (FALSE OR TRUE)) AND NOT(FALSE)') is True\n"
+  },
+  {
+    "task_name": "merge_dicts_recursively",
+    "task_spec": "Implement merge_recursive(a, b) merging dictionaries deeply. Rules: (1) Primitive values in b overwrite those in a, (2) If both values are dicts, merge recursively, (3) Lists should be concatenated, (4) Ignore keys whose values are None in b, (5) Must not mutate inputs.",
+    "starter_code": "def merge_recursive(a: dict, b: dict) -> dict:\n    # TODO\n    raise NotImplementedError\n",
+    "visible_test": "from solution import merge_recursive\n\ndef test_simple():\n    assert merge_recursive({'x':1}, {'x':2}) == {'x':2}\n\ndef test_nested():\n    assert merge_recursive({'a': {'b':1}}, {'a':{'b':2}}) == {'a':{'b':2}}\n",
+    "hidden_test": "import pytest\nfrom solution import merge_recursive\n\ndef test_list_concat():\n    assert merge_recursive({'x':[1]}, {'x':[2,3]}) == {'x':[1,2,3]}\n\ndef test_ignore_none():\n    assert merge_recursive({'a':1}, {'a':None}) == {'a':1}\n\ndef test_no_mutation():\n    a={'x':[1]}; b={'x':[2]}; _=merge_recursive(a,b)\n    assert a=={'x':[1]} and b=={'x':[2]}\n\ndef test_complex_mix():\n    a={'a':{'b':[1]}, 'z':5}\n    b={'a':{'b':[2]}, 'z':None}\n    assert merge_recursive(a,b)=={'a':{'b':[1,2]}, 'z':5}\n"
+  },
+  {
+    "task_name": "tokenize_csv_escaped",
+    "task_spec": "Implement parse_csv_line(line) supporting CSV with quotes, escaped quotes (\"\"), commas inside quotes, and trimming of unquoted fields. No multi-line support. Malformed quoting must raise ValueError.",
+    "starter_code": "def parse_csv_line(line: str):\n    # TODO\n    raise NotImplementedError\n",
+    "visible_test": "from solution import parse_csv_line\n\ndef test_simple():\n    assert parse_csv_line('a,b,c') == ['a','b','c']\n\ndef test_basic_quotes():\n    assert parse_csv_line('\"a\",\"b\"') == ['a','b']\n",
+    "hidden_test": "import pytest\nfrom solution import parse_csv_line\n\ndef test_escaped_quotes():\n    assert parse_csv_line('\"a\"\"b\",c') == ['a\"b','c']\n\ndef test_commas_inside():\n    assert parse_csv_line('\"a,b\",x') == ['a,b','x']\n\ndef test_malformed():\n    with pytest.raises(ValueError): parse_csv_line('\"abc)\n\ndef test_spaces():\n    assert parse_csv_line(' x , \" y z \" ') == ['x',' y z ']\n"
+  },
+  {
+    "task_name": "calculate_checksum",
+    "task_spec": "Implement calculate_checksum(data: bytes) -> int that computes an 8-bit rolling checksum: sum of all bytes + sum of all prefix sums, modulo 256. Must not use Python builtins like sum on the whole list (but summing portions is fine). Must be deterministic.",
+    "starter_code": "def calculate_checksum(data: bytes) -> int:\n    # TODO\n    raise NotImplementedError\n",
+    "visible_test": "from solution import calculate_checksum\n\ndef test_small():\n    assert calculate_checksum(b'ABC') == calculate_checksum(b'ABC')\n",
+    "hidden_test": "from solution import calculate_checksum\n\ndef test_known():\n    assert calculate_checksum(b'ABC') == ((65+66+67) + (65 + 65+66 + 65+66+67)) % 256\n\ndef test_empty():\n    assert calculate_checksum(b'') == 0\n\ndef test_randomized():\n    import random\n    random.seed(0)\n    for _ in range(50):\n        b = bytes([random.randint(0,255) for _ in range(20)])\n        assert calculate_checksum(b) == calculate_checksum(b)\n"
+  },
+  {
+    "task_name": "evaluate_math_safe",
+    "task_spec": "Implement safe_math(expr) that evaluates integer expressions with +, -, *, //, parentheses, and unary minus. No floats. Must reject invalid tokens, division by zero, and deeply nested expressions (>200 depth). Must not use eval or ast.literal_eval.",
+    "starter_code": "def safe_math(expr: str) -> int:\n    # TODO\n    raise NotImplementedError\n",
+    "visible_test": "from solution import safe_math\n\ndef test_simple():\n    assert safe_math('1+2') == 3\n\ndef test_mul():\n    assert safe_math('2*3') == 6\n",
+    "hidden_test": "import pytest\nfrom solution import safe_math\n\ndef test_precedence():\n    assert safe_math('2+3*4') == 14\n\ndef test_unary():\n    assert safe_math('-3*2') == -6\n\ndef test_zero_div():\n    with pytest.raises(ZeroDivisionError): safe_math('1//0')\n\ndef test_invalid():\n    with pytest.raises(ValueError): safe_math('2 + ?')\n\ndef test_nesting():\n    expr = '('*210 + '1' + ')'*210\n    with pytest.raises(ValueError): safe_math(expr)\n"
+  },
+  {
+    "task_name": "stable_sort_records",
+    "task_spec": "Implement stable_sort(records, key) where records is a list of dicts and key is a dotted path like 'a.b.c'. Sorting must be stable. Missing keys must sort after present ones. Must not mutate the original list.",
+    "starter_code": "def stable_sort(records, key):\n    # TODO\n    raise NotImplementedError\n",
+    "visible_test": "from solution import stable_sort\n\ndef test_basic():\n    r=[{'x':1},{'x':0}]\n    assert stable_sort(r,'x')[0]['x']==0\n",
+    "hidden_test": "import pytest\nfrom solution import stable_sort\n\ndef test_stability():\n    r=[{'x':1,'id':1},{'x':1,'id':2}]\n    out=stable_sort(r,'x')\n    assert out[0]['id']==1\n\ndef test_dotted():\n    r=[{'a':{'b':2}}, {'a':{'b':1}}]\n    assert stable_sort(r,'a.b')[0]['a']['b']==1\n\ndef test_missing():\n    r=[{'a':{'b':1}},{}]\n    assert stable_sort(r,'a.b')[1]=={}\n\ndef test_no_mutation():\n    r=[{'x':2},{'x':1}]; _=stable_sort(r,'x'); assert r==[{'x':2},{'x':1}]\n"
+  },
+  {
+    "task_name": "format_mini_table",
+    "task_spec": "Implement format_table(rows) where rows is a list of dicts with equal keys. Return a string table with columns aligned, padding with spaces. Must support multi-type values, converting them to strings. Missing keys invalid. Extra spaces or trimming mistakes must not occur.",
+    "starter_code": "def format_table(rows):\n    # TODO\n    raise NotImplementedError\n",
+    "visible_test": "from solution import format_table\n\ndef test_basic():\n    r=[{'a':1,'b':2}]\n    out=format_table(r)\n    assert 'a' in out and 'b' in out\n",
+    "hidden_test": "import pytest\nfrom solution import format_table\n\ndef test_alignment():\n    rows=[{'a':1,'b':22},{'a':333,'b':4}]\n    out=format_table(rows)\n    lines=out.split('\\n')\n    idx=lines[0].index('b')\n    assert lines[1].index('b')==idx\n\ndef test_missing_key():\n    with pytest.raises(ValueError): format_table([{'a':1},{'b':2}])\n"
+  },
+  {
+    "task_name": "build_dependency_graph",
+    "task_spec": "Implement build_graph(pairs) where pairs is list of (package, dependency). Return adjacency list with no cycles allowed (detect cycles). Sort dependencies alphabetically. Missing or malformed entries invalid.",
+    "starter_code": "def build_graph(pairs):\n    # TODO\n    raise NotImplementedError\n",
+    "visible_test": "from solution import build_graph\n\ndef test_simple():\n    assert build_graph([('a','b')]) == {'a':['b'], 'b':[]}\n",
+    "hidden_test": "import pytest\nfrom solution import build_graph\n\ndef test_multi_edges():\n    g=build_graph([('a','b'),('a','c'),('b','d')])\n    assert g['a']==['b','c'] and g['b']==['d']\n\ndef test_cycle():\n    with pytest.raises(ValueError): build_graph([('a','b'),('b','a')])\n\ndef test_invalid():\n    with pytest.raises(ValueError): build_graph([('a',)])\n"
+  },
+  {
+    "task_name": "canonicalize_html_whitespace",
+    "task_spec": "Implement normalize_html_ws(text) collapsing sequences of spaces, tabs, and newlines into a single space, *but* preserving spaces inside <pre>...</pre> blocks. Must handle nested tags, malformed tags invalid.",
+    "starter_code": "def normalize_html_ws(text: str) -> str:\n    # TODO\n    raise NotImplementedError\n",
+    "visible_test": "from solution import normalize_html_ws\n\ndef test_basic():\n    assert normalize_html_ws('a   b') == 'a b'\n",
+    "hidden_test": "import pytest\nfrom solution import normalize_html_ws\n\ndef test_pre_preserved():\n    assert normalize_html_ws('<pre> a   b </pre>') == '<pre> a   b </pre>'\n\ndef test_mixed():\n    assert normalize_html_ws('x\\n\\t y <pre>  z   </pre>') == 'x y <pre>  z   </pre>'\n\ndef test_invalid():\n    with pytest.raises(ValueError): normalize_html_ws('<pre>missing end')\n"
+  },
+  {
+    "task_name": "group_anagrams",
+    "task_spec": "Implement group_anagrams(words) grouping words into lists of anagrams. Sorting inside each group alphabetical. Sorting groups by representative word. Ignore case. Must not mutate input.",
+    "starter_code": "def group_anagrams(words):\n    # TODO\n    raise NotImplementedError\n",
+    "visible_test": "from solution import group_anagrams\n\ndef test_simple():\n    assert group_anagrams(['ab','ba']) == [['ab','ba']]\n",
+    "hidden_test": "from solution import group_anagrams\n\ndef test_case_insensitive():\n    out=group_anagrams(['Eat','Tea','ate'])\n    assert any(sorted(g)==['ate','Eat','Tea'] for g in out)\n\ndef test_multiple_groups():\n    out=group_anagrams(['a','b','c','aa','aa'])\n    assert any(g==['a'] for g in out)\n\ndef test_no_mutation():\n    w=['ab','ba']; _=group_anagrams(w); assert w==['ab','ba']\n"
+  },
+  {
+    "task_name": "balanced_bracket_score",
+    "task_spec": "Implement bracket_score(s) where score is computed as: a '()' pair is worth 1, nesting multiplies by 2. Example: '()' -> 1, '(())' -> 2, '()()' -> 2, '(()())' -> 4. Invalid brackets raise ValueError.",
+    "starter_code": "def bracket_score(s: str) -> int:\n    # TODO\n    raise NotImplementedError\n",
+    "visible_test": "from solution import bracket_score\n\ndef test_simple():\n    assert bracket_score('()')==1\n\ndef test_concat():\n    assert bracket_score('()()')==2\n",
+    "hidden_test": "import pytest\nfrom solution import bracket_score\n\ndef test_nested():\n    assert bracket_score('(())')==2\n\ndef test_complex():\n    assert bracket_score('(()())')==4\n\ndef test_invalid():\n    with pytest.raises(ValueError): bracket_score('(()'\n"
+  },
+  {
+    "task_name": "mini_url_router",
+    "task_spec": "Implement Router class with method add_route(pattern, handler) and resolve(path). Patterns support '/user/:id', '/a/*', static segments. Precedence: static > param > wildcard. resolve returns handler and params dict. Missing route raises KeyError.",
+    "starter_code": "class Router:\n    def __init__(self):\n        self.routes = []\n\n    def add_route(self, pattern, handler):\n        # TODO\n        raise NotImplementedError\n\n    def resolve(self, path):\n        # TODO\n        raise NotImplementedError\n",
+    "visible_test": "from solution import Router\n\ndef test_param():\n    r=Router(); r.add_route('/x/:id','h')\n    h,p=r.resolve('/x/123')\n    assert h=='h' and p['id']=='123'\n",
+    "hidden_test": "import pytest\nfrom solution import Router\n\ndef test_wildcard():\n    r=Router(); r.add_route('/a/*','h1'); r.add_route('/a/b','h2')\n    assert r.resolve('/a/b')[0]=='h2'\n\ndef test_missing():\n    r=Router(); with pytest.raises(KeyError): r.resolve('/no')\n"
+  },
+  {
+    "task_name": "aggregate_time_windows",
+    "task_spec": "Implement aggregate(events) where events is list of (start,end,value). Merge overlapping intervals, summing values where they overlap. Assume integers. Must output consolidated non-overlapping intervals. Ordering must be ascending.",
+    "starter_code": "def aggregate(events):\n    # TODO\n    raise NotImplementedError\n",
+    "visible_test": "from solution import aggregate\n\ndef test_simple():\n    assert aggregate([(1,3,5)])==[(1,3,5)]\n",
+    "hidden_test": "from solution import aggregate\n\ndef test_overlap():\n    assert aggregate([(1,3,2),(2,4,3)])==[(1,2,2),(2,3,5),(3,4,3)]\n\ndef test_unsorted():\n    assert aggregate([(5,7,1),(1,2,1)])==[(1,2,1),(5,7,1)]\n"
+  }
+]
