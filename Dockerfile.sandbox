@@ -10,8 +10,8 @@ RUN pip install --no-cache-dir pytest pytest-timeout hypothesis coverage black f
 WORKDIR /workspace
 
 # Create non-root user for better security
-RUN useradd -m -u 1000 sandbox && \
-    chown -R sandbox:sandbox /workspace
+RUN useradd -m -u 1000 sandbox
+RUN chown -R sandbox:sandbox /workspace
 
 # Switch to non-root user
 USER sandbox

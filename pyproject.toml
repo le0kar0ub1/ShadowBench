@@ -10,7 +10,6 @@ dependencies = [
     "inspect-ai>=0.3.150",
     "matplotlib>=3.10.7",
     "openai>=2.8.1",
-    "openrouter>=0.0.19",
     "pandas>=2.3.3",
     "seaborn>=0.13.2",
 ]

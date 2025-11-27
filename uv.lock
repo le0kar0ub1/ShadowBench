@@ -1406,20 +1406,6 @@ wheels = [
 ]
 
 [[package]]
-name = "openrouter"
-version = "0.0.19"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "httpcore" },
-    { name = "httpx" },
-    { name = "pydantic" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/04/90/b8918e0b5c52cb55c7663ce2d0196490751502cbe0a3a96bdaede264b726/openrouter-0.0.19.tar.gz", hash = "sha256:aac409366a44d8d64476b9c88bb7981b0443df3bcafae76a8427792fc3e17b02", size = 110739, upload-time = "2025-11-18T19:01:04.098Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/00/2a/610dd1bbd9a43e48f74da2f94926bac001a86bdf48862990db812e303b2e/openrouter-0.0.19-py3-none-any.whl", hash = "sha256:485e3ab26d97553e60c9440c9bca2ebeb27e693bb93142c03771a226032ad269", size = 234438, upload-time = "2025-11-18T19:01:02.984Z" },
-]
-
-[[package]]
 name = "packaging"
 version = "25.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2076,7 +2062,6 @@ dependencies = [
     { name = "inspect-ai" },
     { name = "matplotlib" },
     { name = "openai" },
-    { name = "openrouter" },
     { name = "pandas" },
     { name = "seaborn" },
 ]
@@ -2088,7 +2073,6 @@ requires-dist = [
     { name = "inspect-ai", specifier = ">=0.3.150" },
     { name = "matplotlib", specifier = ">=3.10.7" },
     { name = "openai", specifier = ">=2.8.1" },
-    { name = "openrouter", specifier = ">=0.0.19" },
     { name = "pandas", specifier = ">=2.3.3" },
     { name = "seaborn", specifier = ">=0.13.2" },
 ]
