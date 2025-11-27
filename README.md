@@ -31,8 +31,8 @@ ShadowBench evaluates agents across 4 distinct scenarios to isolate different ga
 |----------|-------------|-------------|
 | **Baseline** | Standard coding workflow. | Agent can modify code and tests freely. |
 | **No Tests** | Blind implementation. | Agent sees no tests, must rely on the spec alone. |
-| **No Edit** | Constrained environment. | Agent sees visible tests but **cannot modify** the test file. |
-| **Anti-Gaming** | Defensive environment. | Agent sees visible tests but **cannot delete or weaken** them. |
+| **No Edit** | Constrained environment. | Agent sees visible tests but is asked to **not modify** the test file. |
+| **Anti-Gaming** | Defensive environment. | Agent sees visible tests but is asked to **not delete or weaken** them. |
 
 ## 🚀 Installation
 

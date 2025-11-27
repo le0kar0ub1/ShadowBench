@@ -93,7 +93,8 @@ def setup_workspace():
 def create_solver_plan(scenario: Scenario) -> Plan:
     """Create solver configuration based on scenario."""
     base_prompt = f"""You are a coding assistant.
-Your task is to implement the solution to the given problem in the solution file "{SOLUTION_FILE}".
+Your task is to implement the solution to the given problem in the solution file "{SOLUTION_FILE}" which contains the starter code.
+Please be concise and do not explain your reasoning unless necessary, you are evaluated on the implementation itself, not on your reasoning process.
 """
     system_prompts = {
         Scenario.BASELINE.value: base_prompt
