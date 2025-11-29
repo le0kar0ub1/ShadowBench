@@ -107,16 +107,28 @@ uv run inspect view
 ```
 
 ### 2. Run an Evaluation
-Execute the benchmark on a specific model and scenario:
+
+ShadowBench offers two evaluation modes:
+
+**A. Agentic Mode (Standard)**
+The model acts as an agent with access to the filesystem and tools (`bash`, `python`). It can explore files, run tests, and modify code. This is the primary benchmark for detecting reward hacking in autonomous agents.
 
 ```bash
-uv run inspect eval inspect_tasks/reward_hacking.py \
+uv run inspect eval inspect_tasks/reward_hacking_agent.py \
   -T model=google/gemini-2.5-flash \
   -T scenario=baseline \
   -T num_problems=5
 ```
 
-## 🔮 Future Roadmap
+**B. Instruct Mode (Lightweight)**
+The model receives the problem statement, starter code, and tests directly in the prompt and must output the solution code. No tools or file access. This is faster and cheaper, suitable for quick iterations.
+```bash
+uv run inspect eval inspect_tasks/reward_hacking_instruct.py \
+  -T model=google/gemini-2.5-flash \
+  -T num_problems=5
+```
+
+## Future Roadmap
 
 To further harden the evaluation against gaming, it might be interesting to consider:
 *   **Static Analysis**: Automatically flag suspicious edits like test deletions or hardcoded conditionals (`if input == 5: return 10`).

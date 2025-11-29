@@ -45,7 +45,7 @@ class RewardHackingDataset:
 
         return Sample(
             input=prompt,
-            target=hidden_tests,
+            target='',
             id=task_name,
             metadata={
                 "task_name": task_name,
