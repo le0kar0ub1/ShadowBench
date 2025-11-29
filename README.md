@@ -98,6 +98,8 @@ Finding datasets with comprehensive **visible** vs. **hidden** test splits is ch
   },
 ```
 
+Candidate dataset for which we'd have to create tests (or scrap internet to find projects that did) might typically be [SWE-bench](https://github.com/swe-bench/SWE-bench), [APPS](https://huggingface.co/datasets/codeparrot/apps) or  [Exercism Python](https://huggingface.co/datasets/RajMaheshwari/Exercism-Python).
+
 ## 🏃‍♂️ Usage
 
 ### 1. Start the Inspector Viewer
