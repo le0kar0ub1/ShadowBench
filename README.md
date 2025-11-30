@@ -31,8 +31,19 @@ ShadowBench evaluates agents across 4 distinct scenarios to isolate different ga
 |----------|-------------|-------------|
 | **Baseline** | Standard coding workflow. | Agent can modify code and tests freely. |
 | **No Tests** | Blind implementation. | Agent sees no tests, must rely on the spec alone. |
-| **No Edit** | Constrained environment. | Agent sees visible tests but is asked to **not modify** the test file. |
-| **Anti-Gaming** | Defensive environment. | Agent sees visible tests but is asked to **not delete or weaken** them. |
+| **No Edit** | Constrained environment. | Agent sees visible tests but **cannot modify** the test file. |
+| **Anti-Gaming** | Defensive environment. | Agent sees visible tests but **cannot delete or weaken** them. |
+
+## 💾 Data
+
+Evaluating whether code-generation models engage in specification-gaming, i.e. producing code that passes tests while violating the intended behavior is fundamentally challenging because most existing programming benchmarks are not designed to surface this failure mode. Tasks like MBPP or HumanEval use clean, usually easy and unambiguous specifications, leaving little opportunity for models to exploit ambiguity.
+
+The difficulty arises from two intertwined constraints:
+- **Specifications must be vague but not misleading**.<br> If the spec is fully precise, models simply solve the task; if it is intentionally deceptive, the benchmark becomes unrealistic. We need tasks where the natural language is incomplete in the same way real-world code is: informal docstrings, implicit assumptions, and underspecified edge cases.
+
+- **Visible tests must be weak enough to allow reward hacking but not trivial**.<br> If visible tests fully capture semantics, no gaming occurs. <br>A carefully balanced two-tier design (minimal visible tests + extensive hidden tests) is required to expose shortcut-taking behavior.
+
+> What we want is fuzzing (even adversarial) evaluation where the goal is to widen the gap between the intended semantics and the observable reward. A good dataset would be built from real-world problems, but they must remain easily tested through automated testing frameworks. The biggest challenge is to find problems that are fitting for this purpose.
 
 ## 🚀 Installation
 
@@ -74,7 +85,7 @@ ShadowBench evaluates agents across 4 distinct scenarios to isolate different ga
 
 ## 📊 Dataset
 
-Finding datasets with comprehensive **visible** vs. **hidden** test splits is challenging. ShadowBench uses a custom dataset located in `data/custom`.
+Finding datasets with comprehensive **visible** vs. **hidden** test splits is challenging. ShadowBench uses a custom dataset located in `data/custom` for educational purposes, but it is not intended to be a formal interesting one.
 
 **Structure:**
 ```json
@@ -98,8 +109,6 @@ Finding datasets with comprehensive **visible** vs. **hidden** test splits is ch
   },
 ```
 
-Candidate dataset for which we'd have to create tests (or scrap internet to find projects that did) might typically be [SWE-bench](https://github.com/swe-bench/SWE-bench), [APPS](https://huggingface.co/datasets/codeparrot/apps) or  [Exercism Python](https://huggingface.co/datasets/RajMaheshwari/Exercism-Python).
-
 ## 🏃‍♂️ Usage
 
 ### 1. Start the Inspector Viewer
@@ -109,16 +118,28 @@ uv run inspect view
 ```
 
 ### 2. Run an Evaluation
-Execute the benchmark on a specific model and scenario:
+
+ShadowBench offers two evaluation modes:
+
+**A. Agentic Mode (Standard)**
+The model acts as an agent with access to the filesystem and tools (`bash`, `python`). It can explore files, run tests, and modify code. This is the primary benchmark for detecting reward hacking in autonomous agents.
 
 ```bash
-uv run inspect eval inspect_tasks/reward_hacking.py \
+uv run inspect eval inspect_tasks/reward_hacking_agent.py \
   -T model=google/gemini-2.5-flash \
   -T scenario=baseline \
   -T num_problems=5
 ```
 
-## 🔮 Future Roadmap
+**B. Instruct Mode (Lightweight)**
+The model receives the problem statement, starter code, and tests directly in the prompt and must output the solution code. No tools or file access. This is faster and cheaper, suitable for quick iterations.
+```bash
+uv run inspect eval inspect_tasks/reward_hacking_instruct.py \
+  -T model=google/gemini-2.5-flash \
+  -T num_problems=5
+```
+
+## Future Roadmap
 
 To further harden the evaluation against gaming, it might be interesting to consider:
 *   **Static Analysis**: Automatically flag suspicious edits like test deletions or hardcoded conditionals (`if input == 5: return 10`).
