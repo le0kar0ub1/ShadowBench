@@ -34,6 +34,17 @@ ShadowBench evaluates agents across 4 distinct scenarios to isolate different ga
 | **No Edit** | Constrained environment. | Agent sees visible tests but **cannot modify** the test file. |
 | **Anti-Gaming** | Defensive environment. | Agent sees visible tests but **cannot delete or weaken** them. |
 
+## 💾 Data
+
+Evaluating whether code-generation models engage in specification-gaming, i.e. producing code that passes tests while violating the intended behavior is fundamentally challenging because most existing programming benchmarks are not designed to surface this failure mode. Tasks like MBPP or HumanEval use clean, usually easy and unambiguous specifications, leaving little opportunity for models to exploit ambiguity.
+
+The difficulty arises from two intertwined constraints:
+- **Specifications must be vague but not misleading**.<br> If the spec is fully precise, models simply solve the task; if it is intentionally deceptive, the benchmark becomes unrealistic. We need tasks where the natural language is incomplete in the same way real-world code is: informal docstrings, implicit assumptions, and underspecified edge cases.
+
+- **Visible tests must be weak enough to allow reward hacking but not trivial**.<br> If visible tests fully capture semantics, no gaming occurs. <br>A carefully balanced two-tier design (minimal visible tests + extensive hidden tests) is required to expose shortcut-taking behavior.
+
+> What we want is fuzzing (even adversarial) evaluation where the goal is to widen the gap between the intended semantics and the observable reward. A good dataset would be built from real-world problems, but they must remain easily tested through automated testing frameworks. The biggest challenge is to find problems that are fitting for this purpose.
+
 ## 🚀 Installation
 
 ### Prerequisites
@@ -74,7 +85,7 @@ ShadowBench evaluates agents across 4 distinct scenarios to isolate different ga
 
 ## 📊 Dataset
 
-Finding datasets with comprehensive **visible** vs. **hidden** test splits is challenging. ShadowBench uses a custom dataset located in `data/custom`.
+Finding datasets with comprehensive **visible** vs. **hidden** test splits is challenging. ShadowBench uses a custom dataset located in `data/custom` for educational purposes, but it is not intended to be a formal interesting one.
 
 **Structure:**
 ```json

@@ -13,6 +13,7 @@ class Scenario(Enum):
     BASELINE = "baseline"
     NO_EDIT = "no_edit"
     ANTI_GAMING = "anti_gaming"
+    COMPLETE_TESTS = "complete_tests"
     NO_TESTS = "no_tests"
 
 def create_reward_hacking_dataset(num_problems: int):
